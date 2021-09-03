@@ -38,10 +38,11 @@ figure[9]={'color':DRED, 'tile':[[1,0], [1,1], [0,1]], 'defPlc':(0,0,0,0), 'pos'
 figure[10]={'color':DCYAN, 'tile':[[1,1,1], [0,1,1]], 'defPlc':(0,0,0,0), 'pos':(11,14), 'text':'F11'} #HGREEN
 figure[11]={'color':BLUE, 'tile':[[1,1,1], [0,0,1], [0,0,1]],  'defPlc':(0,0,0,0), 'pos':(14,14), 'text':'F11'} #DBLUE
 
-confiurations=[{}]*5
+placedFigures=[(None, None, None )]*len(figure)
+configurations=[{}]*5
 #confiurations[0]={'figOR':[[0,1,1], [1,0,0], [11,0,0], [7,1,1]],'pos':((0,0), (3, 3),(5,0),(5,3))}
-confiurations[0]={'figOR':[[0,0,0], [1,0,0]],'pos':((0,0), (3, 3),(5,0),(5,3))}
-print(confiurations)
+configurations[0]={'figOR':[[1,1,0], [11,0 ,0], [7,0,0]],'pos':((0,0), (0, 2), (2,1),(5,3))}
+print(configurations)
 
 gridSize=25
 size =  gridSize-6
@@ -79,12 +80,29 @@ def addFigure(board,fig, xpos, ypos ,mirror, orientation, alwaysPlace):
     # -1 : Rotate counter clock wise
     #  0 : Place as it is
     #  1 : Rotate clock wise
-    print(xpos, ypos, playField,alwaysPlace)
-    if (xpos<playField[0] and ypos<playField[1]) and not alwaysPlace:
+    # always plays
+    xposMax=xpos
+    yposMax=ypos
+    sizex=len(fig['tile'][0])
+    sizey=len(fig['tile'])
+    bsizex=playField[0]
+    bsizey=playField[1]
+    if orientation==0:
+        xposMax+=sizex
+        yposMax+=sizey
+    else:
+        xposMax+=sizey
+        yposMax+=sizex
+    print(xpos, xposMax, ypos, yposMax, playField, alwaysPlace)
+    if not (xpos<bsizex and xposMax<=bsizex) :
+        print("x: %d, %d<%d"%(xpos, xposMax, bsizex))
+        print("Drop figure due to xpos")
+    if not (ypos<bsizey and yposMax<=bsizey) :
+        print("y: %d, %d<=%d"%(ypos, yposMax, bsizey))
+        print("Drop figure due to ypos")
+    if not (xpos<bsizex and xposMax<=bsizex and ypos<= bsizey and yposMax<=bsizey) and alwaysPlace:
         print("Drop figure")
         return -1,-1
-    sizey=len(fig['tile'])
-    sizex=len(fig['tile'][0])
     print('figure', fig, sizex, sizey)
     xseq=list(range(sizex))
     print(xseq)
@@ -139,13 +157,12 @@ for i in range(len(figure)):
     print(figure[i])
     addFigure(board, figure[i],figure[i]['pos'][1], figure[i]['pos'][0],0,0, False)
     addKeystoneName(figure[i])
-for i in range(len(confiurations[0]['figOR'])):
-    print( "figOR", confiurations[0]['figOR'] )
-    for j in range(len(confiurations[0]['figOR'])):
-        figIdx= confiurations[0]['figOR'][i][0]
-        x=confiurations[0]['pos'][j][0]
-        y=confiurations[0]['pos'][j][1]
-        addFigure(board, figure[figIdx], x, y, confiurations[0]['figOR'][j][1],confiurations[0]['figOR'][j][2], False)
+for i in range(len(configurations[0]['figOR'])):
+    print( "figOR", configurations[0]['figOR'] )
+    figIdx= configurations[0]['figOR'][i][0]
+    x=configurations[0]['pos'][i][0]
+    y=configurations[0]['pos'][i][1]
+    addFigure(board, figure[figIdx], x, y, configurations[0]['figOR'][i][1],configurations[0]['figOR'][i][2], False)
 
 selectedKey=-1
 while True:
@@ -161,8 +178,9 @@ while True:
         if event.type == MOUSEBUTTONUP:
             print(event.pos[0], event.pos[1])
             x,y=getPlaygroundPos(event.pos[0], event.pos[1])
-            print("Location (%d, %d)" % (x, y))
-            addFigure(board, figure[selectedKey], x, y, confiurations[0]['figOR'][j][1],confiurations[0]['figOR'][j][2], True)
+            if (x>=0 and y>=0) and selectedKey>=0:
+                print("Place at Location (%d, %d)" % (x, y))
+                addFigure(board, figure[selectedKey], x, y, configurations[0]['figOR'][j][1],configurations[0]['figOR'][j][2], True)
         if event.type == KEYDOWN and event.key == K_ESCAPE:
             pygame.quit()
             sys.exit()
