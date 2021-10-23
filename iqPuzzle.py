@@ -24,7 +24,7 @@ DVIOLET=(148, 0, 255)
 ORANGE=(255, 165, 0)
 WHITE=(255, 255, 255)
 
-figure=[{}]*12
+figure=[{}]*13
 figure[0]={'color':TRED, 'tile':[[1,1,1,1], [1,0,0,0]], 'pos':(7,0),  'defPlc':(10,2,1,0), 'text':'F1'} #RED
 figure[1]={'color':PINK , 'tile':[[1,1,0,0], [0,1,1,1]], 'pos':(10,0),  'defPlc':(0,0,0,0), 'text':'F2'} #PINK
 figure[2]={'color':CYAN, 'tile':[[1,1], [1,0]], 'pos':(13,0),  'defPlc':(0,0,0,0), 'text':'F3'} #HBLUE
@@ -37,6 +37,7 @@ figure[8]={'color':ORANGE, 'tile':[[1,1,0], [0,1,1]],  'defPlc':((0,0,0,0), (0,1
 figure[9]={'color':DRED, 'tile':[[1,0], [1,1], [0,1]], 'defPlc':(0,0,0,0), 'pos':(7,14), 'text':'F10'} #ORANGE
 figure[10]={'color':DCYAN, 'tile':[[1,1,1], [0,1,1]], 'defPlc':(0,0,0,0), 'pos':(11,14), 'text':'F11'} #HGREEN
 figure[11]={'color':BLUE, 'tile':[[1,1,1], [0,0,1], [0,0,1]],  'defPlc':(0,0,0,0), 'pos':(14,14), 'text':'F11'} #DBLUE
+figure[12]={'color':BLACK, 'tile':[[1,1,1,1], [1,1,1,1], [1,1,1,1]],  'defPlc':(0,0,0,0), 'pos':(-1,-1), 'text':'F11'} #DBLUE
 
 placedFigures=[(None, None, None )]*len(figure)
 configurations=[{}]*5
@@ -47,7 +48,7 @@ print(configurations)
 gridSize=25
 size =  gridSize-6
 playField = ((0,11), (0,5))
-placementRange=((13,17),(1,5))
+placementRange=((12,16),(1,5))
 boardSize =(19,19)
 
 pygame.init()
@@ -165,6 +166,8 @@ def isInisPlacementRange(x,y,posRange):
 initPlayField(board)
 for i in range(len(figure)):
     print(figure[i])
+    if figure[i]['pos'][1]<0: 
+        continue
     addFigure(board, figure[i],figure[i]['pos'][1], figure[i]['pos'][0],0,0, True)
     addKeystoneName(figure[i])
 
@@ -176,6 +179,7 @@ for i in range(len(configurations[0]['figOR'])):
     addFigure(board, figure[figIdx], x, y, configurations[0]['figOR'][i][1],configurations[0]['figOR'][i][2], True)
 
 selectedKey=-1
+rotateKeys=[pygame.K_r, pygame.K_R]
 while True:
     for event in pygame.event.get():
         draw(surface, board )
@@ -186,6 +190,12 @@ while True:
             print(event.pos[0], event.pos[1])
             selectedKey=getFigureCode(event.pos[0], event.pos[1])
             print("Is key nr: %d" % selectedKey)
+            addFigure(board, figure[-1], placementRange[0][0], placementRange[1][0], 0,0, True)
+            addFigure(board, figure[selectedKey], placementRange[0][0], placementRange[1][0], 0,0, True)
+            isPlaceRange=isInisPlacementRange(x,y,placementRange)
+            if isPlaceRange:
+                print("in range")
+                
         if event.type == MOUSEBUTTONUP:
             print(event.pos[0], event.pos[1])
             x,y=getPlaygroundPos(event.pos[0], event.pos[1])
@@ -198,7 +208,14 @@ while True:
                 if isPlaceRange:
                     print("Place in Placerange")
                     addFigure(board, figure[selectedKey], placementRange[0][0], placementRange[1][0], 0,0, True)
-        if event.type == KEYDOWN and (event.key == "R" or event.key=="r"):
+
+        if pygame.mouse.get_focused():
+            print(event)
+        if event.type == KEYDOWN:
+            print(event.key)
+            if event.key in rotateKeys:
+                print("R or r")
+
             x,y = pygame.mouse.get_pos()
             x/=gridSize
             y/=gridSize
