@@ -48,7 +48,7 @@ print(configurations)
 gridSize=25
 size =  gridSize-6
 playField = ((0,11), (0,5))
-placementRange=((12,16),(1,5))
+ =((12,16),(1,5))
 boardSize =(19,19)
 
 pygame.init()
@@ -179,7 +179,7 @@ for i in range(len(configurations[0]['figOR'])):
     addFigure(board, figure[figIdx], x, y, configurations[0]['figOR'][i][1],configurations[0]['figOR'][i][2], True)
 
 selectedKey=-1
-rotateKeys=[pygame.K_r, pygame.K_R]
+rotateKeys=[pygame.locals.K_r]
 while True:
     for event in pygame.event.get():
         draw(surface, board )
@@ -213,12 +213,12 @@ while True:
             print(event)
         if event.type == KEYDOWN:
             print(event.key)
-            if event.key in rotateKeys:
-                print("R or r")
 
             x,y = pygame.mouse.get_pos()
             x/=gridSize
             y/=gridSize
+            if event.key in rotateKeys:
+                print("R or r at %d, %d Range((%d,%d),(%d %d))" % (x,y,placementRange[0][0],placementRange[1][0],  placementRange[1][1], placementRange[1][1]))
             if (x > placementRange[0][0] and x<placementRange[1][0]) and ( y > placementRange[1][1] and y<placementRange[1][1]):
                 print("In range")
         if event.type == KEYDOWN and event.key == K_ESCAPE:
