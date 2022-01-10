@@ -85,8 +85,9 @@ class board:
         self.figure[12]={'color':BLACK, 'tile':[[1,1,1,1], [1,1,1,1], [1,1,1,1]],  'defPlc':(0,0,0,0), 'pos':(-1,-1), 'text':'F11'} #DBLUE
         self.board=[[(0,0,0) for i in range(self.size[0])] for j in range(self.size[1])]
         if size[0]==19 and size[1]==19:
-            self.showKeys()
+            self.setKeys()
             self.graphicInit()
+            self.draw()
             print("Graphic init")
 
     def graphicInit(self):
@@ -170,9 +171,8 @@ class board:
                 print("y: %d, %d<=%d"%(ypos, yposMax, bsizey))
                 print("Drop figure due to ypos")
                 return -1,-1
-        print('figure', fig, sizex, sizey)
         placeKey = fig#self.rotateKey(fig, rotationGrad)
-        print("PlaceKey: %s" %str(placeKey))
+        print("PlaceKey: %s" %( str(placeKey))
         xseq=list(range(sizex))
         xPlcSeq=xseq[:]
         xPickSeq=xseq[:]
@@ -192,7 +192,7 @@ class board:
 
                 print("O: rot:%d (%d, %d) -> (%d, %d)" %(rotationGrad, xPl,yPl, xPi, yPi))
 
-    def showKeys(self):
+    def setKeys(self):
         for i in range(len(self.figure)):
             print("Place Tile %d"%i)
             if self.figure[i]['pos'][1]<0:
@@ -217,6 +217,14 @@ class board:
                     print("Key is %d" % i)
                     return i
         return -1
+
+    def draw(self):
+        for x in range(len(self.board)):
+            for y in range(len(self.board[0])):
+                xp=gridSize*x
+                yp=gridSize*y
+                pygame.draw.circle(self.surface, self.board[x][y], (xp+size,yp+size),size>>1,0)
+        pygame.display.update()
 
 
 class placeRange(board):
@@ -279,14 +287,12 @@ class game:
                 if event.type == MOUSEBUTTONDOWN:
                     selectedKey=self.full.getFigureCode(event.pos[0], event.pos[1])
                     print("Selected key is nr: %d" % selectedKey)
+                    #Clear Placement range
                     self.full.addFigure( figure[-1], self.placementRange[0][0], self.placementRange[1][0], 0,0, True)
                     self.full.addFigure( figure[selectedKey], self.placementRange[0][0], self.placementRange[1][0], 0,0, True)
                     self.isPlaceRange=self.full.isInPlacementRange(x,y)
                     if self.isPlaceRange:
-                        print("in range")
-
-                if event.type == MOUSEBUTTONDOWN:
-                    print(event.pos[0], event.pos[1])
+                        print(event.pos[0], event.pos[1])
                     x,y=self.full.getPlaygroundPos(event.pos[0], event.pos[1])
                     isPlayGroundRange=self.playGround.isInPlacementRange(x,y)
                     self.isPlaceRange=self.placeRange.isInPlacementRange(x,y)
@@ -297,13 +303,14 @@ class game:
                         if self.isPlaceRange:
                             print("Place in Placerange")
                             self.full.addFigure( figure[selectedKey], placementRange[0][0], placementRange[1][0], 0,rotate, True)
+
                 if event.type == MOUSEBUTTONUP:
                     x,y=self.placeRange.getPlaygroundPos(event.pos[0], event.pos[1])
                     print("BTN UP (%d, %d)" %(x,y))
 
                 if pygame.mouse.get_focused() and event.type==4:
                     x,y=self.full.getPlaygroundPos(event.pos[0], event.pos[1])
-                    inPlacementRange = self.full.isInPlacementRange(x,y)
+                    self.inPlacementRange = self.full.isInPlacementRange(x,y)
                     print("focused %s " % (str(self.full.getPlaygroundPos(event.pos[0], event.pos[1]))))
                 if event.type == KEYUP:
                     print(event.key, K_ESCAPE)
@@ -321,10 +328,12 @@ class game:
                         rotate =(rotate+90)%360
                         print("R or r at (%d, %d) Range((%d,%d),(%d %d)), rotate %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], rotate))
                         self.full.addFigure( figure[selectedKey], self.placementRange[0][0],self.placementRange[1][0], mirror,rotate, True)
+                        self.placeRange.draw()
                     if event.key == pygame.locals.K_m:
                         mirror =(mirror+1)%2
                         print("S or s at (%d, %d) Range((%d,%d),(%d %d)), mirror %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], mirror))
                         self.full.addFigure( figure[selectedKey], self.placementRange[0][0],self.placementRange[1][0], mirror ,rotate, True)
+                        self.placeRange.draw()
                     if (x > self.placementRange[0][0] and x<self.placementRange[1][0]) and ( y > self.placementRange[1][1] and y<self.placementRange[1][1]):
                             print("In range")
 
