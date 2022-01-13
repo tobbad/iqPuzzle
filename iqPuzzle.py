@@ -28,22 +28,7 @@ DVIOLET=(148, 0, 255)
 ORANGE=(255, 165, 0)
 WHITE=(255, 255, 255)
 
-figure=[{}]*13
-figure[0]={'color':TRED, 'tile':[[1,1,1,1], [1,0,0,0]], 'pos':(7,0),  'defPlc':(10,2,1,0), 'text':'F1'} #RED
-figure[1]={'color':PINK , 'tile':[[1,1,0,0], [0,1,1,1]], 'pos':(10,0),  'defPlc':(0,0,0,0), 'text':'F2'} #PINK
-figure[2]={'color':CYAN, 'tile':[[1,1], [1,0]], 'pos':(13,0),  'defPlc':(0,0,0,0), 'text':'F3'} #HBLUE
-figure[3]={'color':DBLUE, 'tile':[[1,1,1], [1,0,0]], 'pos':(16,0),  'defPlc':(0,0,0,0), 'text':'F4'} #DRED
-figure[4]={'color':YELLOW, 'tile':[[1,1,1,1], [0,1,0,0]],  'defPlc':(0,0,0,0), 'pos':(7,5), 'text':'F5'}#YELLOW
-figure[5]={'color':DGREEN, 'tile':[[1,1,1], [1,0,1]],  'defPlc':(0,0,0,0), 'pos':(10,5), 'text':'F6'} #DGREEN
-figure[6]={'color':DVIOLET, 'tile':[[1,1,0], [0,1,0], [0,1,1]],  'defPlc':(0,0,0,0), 'pos':(7,10), 'text':'F8'}   #Violet
-figure[7]={'color':GREEN, 'tile':[[1,1,1], [0,1,0]],  'defPlc':(0,0,0,0), 'pos':(11,10) , 'text':'F7'}#GREEN
-figure[8]={'color':ORANGE, 'tile':[[1,1,0], [0,1,1]],  'defPlc':((0,0,0,0), (0,1,0)), 'pos':(15,10), 'text':'F9'} #ORANGE
-figure[9]={'color':DRED, 'tile':[[1,0], [1,1], [0,1]], 'defPlc':(0,0,0,0), 'pos':(7,14), 'text':'F10'} #ORANGE
-figure[10]={'color':DCYAN, 'tile':[[1,1,1], [0,1,1]], 'defPlc':(0,0,0,0), 'pos':(11,14), 'text':'F11'} #HGREEN
-figure[11]={'color':BLUE, 'tile':[[1,1,1], [0,0,1], [0,0,1]],  'defPlc':(0,0,0,0), 'pos':(14,14), 'text':'F11'} #DBLUE
-figure[12]={'color':BLACK, 'tile':[[1,1,1,1], [1,1,1,1], [1,1,1,1]],  'defPlc':(0,0,0,0), 'pos':(-1,-1), 'text':'F11'} #DBLUE
-
-placedFigures=[(None, None, None )]*len(figure)
+placedFigures=[(None, None, None )]*13
 configurations=[{}]*5
 #confiurations[0]={'figOR':[[0,1,1], [1,0,0], [11,0,0], [7,1,1]],'pos':((0,0), (3, 3),(5,0),(5,3))}
 configurations[0]={'figOR':[[1,0,1], [11,0 ,0], [7,0,0]],'pos':((2,0), (3,2), (0,3),(5,3))}
@@ -52,7 +37,6 @@ print(configurations)
 
 allKeysShow=True
 gridSize=25
-size =  gridSize-6
 rotate=0
 mirror=0
 playField = ((0,11), (0,5))
@@ -65,29 +49,30 @@ rot=np.array([[0,0.5],[0.5,0]])
 
 
 class board:
-    def __init__(self, xoffset, yoffset, size):
-        self.size = size
-        self.origin=(xoffset, yoffset)
+    def __init__(self, xoffset, yoffset):
+        self.size = (19,19)
+        self.offset=(xoffset, yoffset)
         self.gridSize=25
+        self.circleRadius= 10
         self.figure=[{}]*13
-        self.figure[0]={'color':TRED, 'tile':[[1,1,1,1], [1,0,0,0]], 'pos':(7,0),  'defPlc':(10,2,1,0), 'text':'F1'} #RED
-        self.figure[1]={'color':PINK , 'tile':[[1,1,0,0], [0,1,1,1]], 'pos':(10,0),  'defPlc':(0,0,0,0), 'text':'F2'} #PINK
-        self.figure[2]={'color':CYAN, 'tile':[[1,1], [1,0]], 'pos':(13,0),  'defPlc':(0,0,0,0), 'text':'F3'} #HBLUE
-        self.figure[3]={'color':DBLUE, 'tile':[[1,1,1], [1,0,0]], 'pos':(16,0),  'defPlc':(0,0,0,0), 'text':'F4'} #DRED
-        self.figure[4]={'color':YELLOW, 'tile':[[1,1,1,1], [0,1,0,0]],  'defPlc':(0,0,0,0), 'pos':(7,5), 'text':'F5'}#YELLOW
-        self.figure[5]={'color':DGREEN, 'tile':[[1,1,1], [1,0,1]],  'defPlc':(0,0,0,0), 'pos':(10,5), 'text':'F6'} #DGREEN
-        self.figure[6]={'color':DVIOLET, 'tile':[[1,1,0], [0,1,0], [0,1,1]],  'defPlc':(0,0,0,0), 'pos':(7,10), 'text':'F8'}   #Violet
-        self.figure[7]={'color':GREEN, 'tile':[[1,1,1], [0,1,0]],  'defPlc':(0,0,0,0), 'pos':(11,10) , 'text':'F7'}#GREEN
-        self.figure[8]={'color':ORANGE, 'tile':[[1,1,0], [0,1,1]],  'defPlc':((0,0,0,0), (0,1,0)), 'pos':(15,10), 'text':'F9'} #ORANGE
-        self.figure[9]={'color':DRED, 'tile':[[1,0], [1,1], [0,1]], 'defPlc':(0,0,0,0), 'pos':(7,14), 'text':'F10'} #ORANGE
-        self.figure[10]={'color':DCYAN, 'tile':[[1,1,1], [0,1,1]], 'defPlc':(0,0,0,0), 'pos':(11,14), 'text':'F11'} #HGREEN
-        self.figure[11]={'color':BLUE, 'tile':[[1,1,1], [0,0,1], [0,0,1]],  'defPlc':(0,0,0,0), 'pos':(14,14), 'text':'F11'} #DBLUE
-        self.figure[12]={'color':BLACK, 'tile':[[1,1,1,1], [1,1,1,1], [1,1,1,1]],  'defPlc':(0,0,0,0), 'pos':(-1,-1), 'text':'F11'} #DBLUE
+        self.figure[0]={'color':TRED, 'tile':[[1,1,1,1], [1,0,0,0]], 'pos':(7,0), 'text':'F1'} #RED
+        self.figure[1]={'color':PINK , 'tile':[[1,1,0,0], [0,1,1,1]], 'pos':(10,0), 'text':'F2'} #PINK
+        self.figure[2]={'color':CYAN, 'tile':[[1,1], [1,0]], 'pos':(13,0), 'text':'F3'} #HBLUE
+        self.figure[3]={'color':YELLOW, 'tile':[[1,1,1,1], [0,1,0,0]], 'pos':(7,5), 'text':'F5'}#YELLOW
+        self.figure[4]={'color':DGREEN, 'tile':[[1,1,1], [1,0,1]], 'pos':(10,5), 'text':'F6'} #DGREEN
+        self.figure[5]={'color':DVIOLET, 'tile':[[1,1,0], [0,1,0], [0,1,1]]  , 'pos':(13,5), 'text':'F8'}   #Violet
+        self.figure[6]={'color':ORANGE, 'tile':[[1,1,0], [0,1,1]], 'pos':(7,10), 'text':'F9'} #ORANGE
+        self.figure[7]={'color':GREEN, 'tile':[[1,1,1], [0,1,0]], 'pos':(10,10) , 'text':'F7'}#GREEN
+        self.figure[8]={'color':DRED, 'tile':[[1,0], [1,1], [0,1]], 'pos':(13,10), 'text':'F10'} #ORANGE
+        self.figure[9]={'color':DCYAN, 'tile':[[1,1,1], [0,1,1]], 'pos':(7,14), 'text':'F11'} #HGREEN
+        self.figure[10]={'color':DBLUE, 'tile':[[1,1,1], [1,0,0]], 'pos':(10,14), 'text':'F4'} #DRED
+        self.figure[11]={'color':BLUE, 'tile':[[1,1,1], [0,0,1], [0,0,1]], 'pos':(13,14), 'text':'F11'} #DBLUE
+        self.figure[12 ]={'color':BLACK, 'tile':[[1,1,1,1], [1,1,1,1], [1,1,1,1], [1,1,1,1]], 'pos':(-1,-1), 'text':'F11'} #DBLUE
         self.board=[[(0,0,0) for i in range(self.size[0])] for j in range(self.size[1])]
-        if size[0]==19 and size[1]==19:
-            self.setKeys()
+        if self.size[0]==19 and self.size[1]==19:
             self.graphicInit()
-            self.draw()
+            self.resetBoard((255,255,255))
+            #self.setKeys()
             print("Graphic init")
 
     def graphicInit(self):
@@ -95,24 +80,26 @@ class board:
             self.surface = pygame.display.set_mode(  (self.gridSize*self.size[0]+gridSize, gridSize*self.size[1]+self.gridSize), 0 ,32)
             pygame.display.set_caption("IQ Puzzler")
             pygame.font.init()
-            basicFont=pygame.font.SysFont(None, 48)
+            basicFont=pygame.font.SysFont(None, 24)
 
 
-    def initPlayField(self, color=BLACK):
-        for x in range(self.xoffset, self.xoffset+self.size[0]) :
-            for y in range(self.yoffset, self.yoffset+self.size[1]):
+    def resetBoard(self, color=BLACK):
+        for x in range(self.offset[0], self.offset[0]+self.size[0]) :
+            for y in range(self.offset[1], self.offset[1]+self.size[1]):
                 xp=self.gridSize*x
                 yp=self.gridSize*y
-                self.board[xp][yp] = color
+                pygame.draw.circle(self.surface, color ,(xp,yp), self.circleRadius)
+        pygame.display.update()
+
 
     def getRange(self):
-        return ((self.origin[0], self.origin[0]+self.size[0]),(self.origin[1], self.origin[1]+self.size[1]))
+        return ((self.offset[0], self.offset[0]+self.size[0]),(self.offset[1], self.offset[1]+self.size[1]))
 
     def isInPlacementRange(self, x,y):
         #print(x,y, posRange,)
-        isPlacement= x>=self.origin[0] and x<self.origin[0]+self.size[0]
+        isPlacement= x>=self.offset[0] and x<self.offset[0]+self.size[0]
         #print("IsPlacment range x %d" % isPlacement)
-        isPlacement&= y>=self.origin[1] and y<self.origin[1]+self.size[1]
+        isPlacement&= y>=self.offset[1] and y<self.offset[1]+self.size[1]
         #print("IsPlacment range x and y %d" % isPlacement)
         return isPlacement
 
@@ -148,7 +135,7 @@ class board:
 
     def addFigure(self ,fig, xpos, ypos ,lmirror, rotationGrad, alwaysPlace):
         # self: Class to apply  Method on
-        # figure: what to paint
+        # fig: what to paint
         # x,y: origin of figure
         # Miror up/down
         # orientation:
@@ -172,7 +159,7 @@ class board:
                 print("Drop figure due to ypos")
                 return -1,-1
         placeKey = fig#self.rotateKey(fig, rotationGrad)
-        print("PlaceKey: %s" %( str(placeKey))
+        print("PlaceKey: %s" %( str(placeKey)))
         xseq=list(range(sizex))
         xPlcSeq=xseq[:]
         xPickSeq=xseq[:]
@@ -183,21 +170,22 @@ class board:
         yPickSeq=yseq[:]
         for xPl, xPi in zip(xPlcSeq,xPickSeq):
             for yPl,yPi in zip(yPlcSeq, yPickSeq):
-                #print(x,y, fig['color'], fig['tile'][y])
+                print(xPl,yPl, fig['color'], fig['tile'][yPi])
                 if fig['tile'][yPi][xPi]==1:
                     self.board[xPl+xpos][yPl+ypos] =  fig['color']
                 else:
                     self.board[xPl+xpos][yPl+ypos] =  WHITE
-                #print("Set at %d, %d %s m=%d o=%d" % (xPl+xpos,yPl+ypos, str(self.board[xPl+xpos][yPl+ypos]), lmirror, lorientation  ))
+                print("Set at %d, %d %s m=%d o=%d" % (xPl+xpos,yPl+ypos, str(self.board[xPl+xpos][yPl+ypos]), mirror, rotationGrad  ))
 
                 print("O: rot:%d (%d, %d) -> (%d, %d)" %(rotationGrad, xPl,yPl, xPi, yPi))
+        self.draw()
 
     def setKeys(self):
         for i in range(len(self.figure)):
             print("Place Tile %d"%i)
             if self.figure[i]['pos'][1]<0:
                 continue
-            self.addFigure( self.figure[i], self.figure[i]['pos'][1], self.figure[i]['pos'][0], 0, 0, True)
+            self.addFigure( self.figure[i], self.figure[i]['pos'][1]+1, self.figure[i]['pos'][0]+1, 0, 0, True)
 
     def getPlaygroundPos(self, x, y):
         x=int(x/self.gridSize)
@@ -206,12 +194,12 @@ class board:
 
     def getFigureCode(self, x,y):
         for i in range(len(self.figure)):
-            ymin=figure[i]['pos'][0]*self.gridSize
-            ymax=(figure[i]['pos'][0]+len(figure[i]['tile'])+1)*self.gridSize
+            ymin=self.figure[i]['pos'][0]*self.gridSize
+            ymax=(self.figure[i]['pos'][0]+len(self.figure[i]['tile'])+1)*self.gridSize
             print(i,'y',ymin, "<",y,"<",ymax)
             if ymin<y and y < ymax:
-                xmin=figure[i]['pos'][1]*self.gridSize
-                xmax=(figure[i]['pos'][1]+len(figure[i]['tile'])+1)*self.gridSize
+                xmin=self.figure[i]['pos'][1]*self.gridSize
+                xmax=(self.figure[i]['pos'][1]+len(self.figure[i]['tile'])+1)*self.gridSize
                 print(i, 'x', xmin, "<", x, "<", xmax)
                 if xmin<x and x<xmax:
                     print("Key is %d" % i)
@@ -219,29 +207,38 @@ class board:
         return -1
 
     def draw(self):
-        for x in range(len(self.board)):
-            for y in range(len(self.board[0])):
-                xp=gridSize*x
-                yp=gridSize*y
-                pygame.draw.circle(self.surface, self.board[x][y], (xp+size,yp+size),size>>1,0)
+        for x in range(self.offset[0], self.offset[0]+self.size[0]):
+            for y in range(self.offset[1], self.offset[1]+self.size[1]):
+                xp=self.gridSize*(x+1)
+                yp=self.gridSize*(y+1)
+                print(x,y,xp,yp)
+                pygame.draw.circle(self.surface, self.board[x][y] ,(xp,yp), self.circleRadius)
         pygame.display.update()
 
-
 class placeRange(board):
-        def __init__(self, xoffset=12, yoffset=1):
-            super().__init__(xoffset, yoffset, (4,4))
+        def __init__(self, xoffset=13, yoffset=1):
+            super().__init__(xoffset, yoffset)
+            self.size=(4,4)
 
-        def draw(self):
-            pass
+        def clearArea(self):
+            for x in range(self.offset[0], self.offset[0]+self.size[0]):
+                for y in range(self.offset[1], self.offset[1]+self.size[1]):
+                    print("placeRange", x,y)
+                    self.board[x][y]=(255,255,255)
 
 
 
 class  playGround(board):
-        def __init__(self, xoffset=0, yoffset=0):
-            super().__init__(xoffset, yoffset, (11,5))
+        def __init__(self, xoffset=1, yoffset=1):
+            super().__init__(xoffset, yoffset)
+            self.size=(11,5)
 
-        def draw(self):
-            pass
+
+        def clearArea(self):
+            for x in range(self.offset[0], self.offset[0]+self.size[0]):
+                for y in range(self.offset[1], self.offset[1]+self.size[1]):
+                    print("playGround",x,y)
+                    self.board[x][y]=(255,255,255)
 
 def addKeystoneName(key):
     text=basicFont.render(key['text'],True, WHITE, BLACK)
@@ -254,33 +251,27 @@ def addKeystoneName(key):
 
 class game:
     def __init__(self):
-        self.full=board(0,0,(19,19))
+        self.full=board(0,0)
+        self.full.resetBoard((255,255,255))
+        self.full.setKeys()
         self.placeRange=placeRange()
+        self.placeRange.resetBoard(RED)
         self.placementRange = self.placeRange.getRange()
         self.playGround=playGround()
+        self.playGround.resetBoard((255, 255, 255))
         self.selectedKey=-1
         self.rotateKeys=[pygame.locals.K_r]
         self.inPlacementRange=True
-        self.drawKeys()
 
     def draw(self):
         self.placeRange.draw()
         self.playGround.draw()
 
-
-    def drawKeys(self):
-        for i in range(len(self.full.figure)):
-            print("Place figOR", self.full.figure[i] )
-            x=self.full.figure[i]['pos'][0]
-            y=self.full.figure[i]['pos'][1]
-            self.full.addFigure(figure[i], x, y, 0,0, True)
-
-
     def run(self):
         while True:
             self.inPlacementRange=False
             for event in pygame.event.get():
-                self.draw()
+                #self.draw()
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
@@ -288,8 +279,8 @@ class game:
                     selectedKey=self.full.getFigureCode(event.pos[0], event.pos[1])
                     print("Selected key is nr: %d" % selectedKey)
                     #Clear Placement range
-                    self.full.addFigure( figure[-1], self.placementRange[0][0], self.placementRange[1][0], 0,0, True)
-                    self.full.addFigure( figure[selectedKey], self.placementRange[0][0], self.placementRange[1][0], 0,0, True)
+                    self.full.addFigure( self.full.figure[-1], self.placementRange[0][0], self.placementRange[1][0], 0,0, True)
+                    self.full.addFigure( self.full.figure[selectedKey], self.placementRange[0][0], self.placementRange[1][0], 0,0, True)
                     self.isPlaceRange=self.full.isInPlacementRange(x,y)
                     if self.isPlaceRange:
                         print(event.pos[0], event.pos[1])
@@ -297,12 +288,12 @@ class game:
                     isPlayGroundRange=self.playGround.isInPlacementRange(x,y)
                     self.isPlaceRange=self.placeRange.isInPlacementRange(x,y)
                     if selectedKey>=0:
-                        print("Place at Location (%d, %d), inRange %d, inPlace %d" % (x, y,isPlayGroundRange,self.isPlaceRange))
+                        print("Place at Location (%d, %d), inRange %d, inPlace %d" % (self.placementRange[0][0], self.placementRange[1][0],isPlayGroundRange,self.isPlaceRange))
                         if isPlayGroundRange:
-                            self.full.addFigure( figure[selectedKey], x, y, 0,0, True)
+                            self.full.addFigure( self.full.figure[selectedKey], x, y, 0,0, True)
                         if self.isPlaceRange:
                             print("Place in Placerange")
-                            self.full.addFigure( figure[selectedKey], placementRange[0][0], placementRange[1][0], 0,rotate, True)
+                            self.full.addFigure( self.full.figure[selectedKey], placementRange[0][0], placementRange[1][0], 0,rotate, True)
 
                 if event.type == MOUSEBUTTONUP:
                     x,y=self.placeRange.getPlaygroundPos(event.pos[0], event.pos[1])
@@ -327,12 +318,12 @@ class game:
                     if event.key in rotateKeys:
                         rotate =(rotate+90)%360
                         print("R or r at (%d, %d) Range((%d,%d),(%d %d)), rotate %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], rotate))
-                        self.full.addFigure( figure[selectedKey], self.placementRange[0][0],self.placementRange[1][0], mirror,rotate, True)
+                        self.full.addFigure( self.full.figure[selectedKey], self.placementRange[0][0],self.placementRange[1][0], mirror,rotate, True)
                         self.placeRange.draw()
                     if event.key == pygame.locals.K_m:
                         mirror =(mirror+1)%2
                         print("S or s at (%d, %d) Range((%d,%d),(%d %d)), mirror %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], mirror))
-                        self.full.addFigure( figure[selectedKey], self.placementRange[0][0],self.placementRange[1][0], mirror ,rotate, True)
+                        self.full.addFigure( self.full.figure[selectedKey], self.placementRange[0][0],self.placementRange[1][0], mirror ,rotate, True)
                         self.placeRange.draw()
                     if (x > self.placementRange[0][0] and x<self.placementRange[1][0]) and ( y > self.placementRange[1][1] and y<self.placementRange[1][1]):
                             print("In range")
