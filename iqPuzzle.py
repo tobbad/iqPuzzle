@@ -68,26 +68,28 @@ class board:
         self.figure[10]={'color':DBLUE, 'tile':[[1,1,1], [1,0,0]], 'pos':(10,15), 'text':'F4'} #DRED
         self.figure[11]={'color':BLUE, 'tile':[[1,1,1], [0,0,1], [0,0,1]], 'pos':(13,15), 'text':'F11'} #DBLUE
         self.figure[12 ]={'color':BLACK, 'tile':[[1,1,1,1], [1,1,1,1], [1,1,1,1], [1,1,1,1]], 'pos':(-1,-1), 'text':'F11'} #DBLUE
-        self.board=[[(0,0,0) for i in range(self.size[0])] for j in range(self.size[1])]
         self.surface=None
-        if self.size[0]==19 and self.size[1]==19:
+        print("Base class")
+        if self.size[0]==19 and self.offset[0]==1 and self.size[1]==19 and self.offset[1]==1:
+            self.board=[[(0,0,0) for i in range(self.size[0])] for j in range(self.size[1])]
             self.graphicInit()
             self.resetBoard((255,255,255))
             print("Graphic init (%d, %d)"%(self.size[0],self.size[1]))
 
     def graphicInit(self):
             pygame.init()
-            self.surface = pygame.display.set_mode(  (self.gridSize*self.size[0]+gridSize, gridSize*self.size[1]+self.gridSize), 0 ,32)
+            print("Surface size (%d,%d)" % (self.gridSize*(self.offset[0]+self.size[0])+gridSize, gridSize*(self.offset[1]+self.size[1])+self.gridSize))
+            self.surface = pygame.display.set_mode( (self.gridSize*(self.offset[0]+self.size[0])+gridSize, gridSize*(self.offset[1]+self.size[1])+self.gridSize), 0 ,32)
             pygame.display.set_caption("IQ Puzzler")
             pygame.font.init()
             basicFont=pygame.font.SysFont(None, 24)
 
 
     def resetBoard(self, color=BLACK):
-        for x in range(self.offset[0], self.offset[0]+self.size[0]) :
-            for y in range(self.offset[1], self.offset[1]+self.size[1]):
-                xp=self.gridSize*x
-                yp=self.gridSize*y
+        for x in range(len(self.board)) :
+            for y in range( len(self.board[0])):
+                xp=self.gridSize*(x+1)
+                yp=self.gridSize*(y+1)
                 if self.surface:
                     pygame.draw.circle(self.surface, color ,(xp,yp), self.circleRadius)
         pygame.display.update()
@@ -208,11 +210,11 @@ class board:
         return -1
 
     def draw(self):
-        for x in range(self.offset[0], self.offset[0]+self.size[0]-1):
-            for y in range(self.offset[1], self.offset[1]+self.size[1]-1):
-                xp=self.gridSize*(x)
-                yp=self.gridSize*(y)
-                print(x,y,xp,yp)
+        for x in range( self.size[0]):
+            for y in range(self.size[1]):
+                xp=self.gridSize*(x+1)
+                yp=self.gridSize*(y+1)
+                print(x,y,xp,yp,len(self.board),len(self.board[1]))
                 pygame.draw.circle(self.surface, self.board[x][y] ,(xp,yp), self.circleRadius)
         pygame.display.update()
 
@@ -222,7 +224,10 @@ class board:
 
 class placeRange(board):
         def __init__(self, xoffset=13, yoffset=1):
-            super().__init__(xoffset, yoffset, 4, 4)
+            super().__init__(xoffset, yoffset, 19,19)
+            print(self.board)
+            print("placeRange")
+            self.size=(4,4)
             self.keys=[]
 
 
@@ -234,7 +239,8 @@ class placeRange(board):
 
 class  playGround(board):
         def __init__(self, xoffset=1, yoffset=1):
-            super().__init__(xoffset, yoffset, 11, 5)
+            super().__init__(xoffset, yoffset, 19,19)
+            print("playGround")
             self.size=(11,5)
             self.keys=[]
 
@@ -256,13 +262,13 @@ def addKeystoneName(key):
 
 class game:
     def __init__(self):
-        self.full=board(1,1)
+        self.full=board(1,1,19,19)
         self.full.resetBoard((255,255,255))
         self.full.setKeys()
         self.playGround=playGround()
-        self.playGround.resetBoard((255, 255, 255))
+        #self.playGround.resetBoard((255, 255, 255))
         self.placeRange=placeRange()
-        self.placeRange.resetBoard(RED)
+        #self.placeRange.resetBoard(RED)
         self.placementRange = self.placeRange.getRange()
         self.selectedKey=-1
         self.rotateKeys=[pygame.locals.K_r]
@@ -279,7 +285,6 @@ class game:
         while True:
             self.inPlacementRange=False
             for event in pygame.event.get():
-                #self.draw()
                 if event.type == QUIT:
                     pygame.quit()
                     sys.exit()
@@ -332,10 +337,6 @@ class game:
                         self.placeRange.draw()
                     if (x > self.placementRange[0][0] and x<self.placementRange[1][0]) and ( y > self.placementRange[1][1] and y<self.placementRange[1][1]):
                             print("In range")
-
-
-
-
         for i in range(len(configurations[0]['figOR'])):
             print("Place figOR", configurations[0]['figOR'] )
             figIdx= configurations[0]['figOR'][i][0]

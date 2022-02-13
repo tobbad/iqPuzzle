@@ -1,0 +1,2 @@
+13.2.20022:
+Rotate/Mirror geht nicht im Place bereich
