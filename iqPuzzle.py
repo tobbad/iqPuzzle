@@ -68,9 +68,9 @@ def rotateKey(key, rotationGrad):
              xRr =np.dot(rot, xvec)
              xRr[0]-=xCenter
              xRr[1]-=yCenter
-             key[int(rKey[x-xCenter])[0]
+             rKey[int(xRr[0])][int(xRr[1])]=key['tile'][x][y]
              print("x,y %d, %d->  %d %d" % (x,y,xRr[0], xRr[1]))
-     return key
+     return rKey
 
 
 
