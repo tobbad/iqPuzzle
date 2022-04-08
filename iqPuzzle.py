@@ -50,24 +50,26 @@ def transformMatrix(rotationGrad):
     return R
 
 def rotateKey(key, rotationGrad):
+     rotationGrad=int(rotationGrad)
      print(key)
      rot =transformMatrix(rotationGrad)
      xSize = len(key['tile'][0])
-     xCenter = 0.5*xSize
      ySize = len(key['tile'])
-     yCenter = 0.5*ySize
+     inCenter = ( 0.5*xSize, 0.5*ySize)
      xvec = np.zeros(2)
      if rotationGrad in (0,180):
          rKey = np.array([xSize, ySize], dtype=float)
      else:
          rKey = np.array([ySize, xSize], dtype=float)
+     print(rKey.size)
+     outCenter = (0.5*len(rKey[0]), 0.5*len(rKey))
      for x in range(len(key['tile'])):
          for y in range(len(key['tile'][0])):
-             xvec[0] = x+xCenter
-             xvec[1] = y+yCenter
-             xRr =np.dot(rot, xvec)
-             xRr[0]-=xCenter
-             xRr[1]-=yCenter
+             xvec[0] = x-inCenter[0]
+             xvec[1] = y-inCenter[1]
+             xRr =rot.dot(xvec)
+             xRr[0]-=outCenter[0] 
+             xRr[1]+=outCenter[1]
              rKey[int(xRr[0])][int(xRr[1])]=key['tile'][x][y]
              print("x,y %d, %d->  %d %d" % (x,y,xRr[0], xRr[1]))
      return rKey
@@ -352,23 +354,6 @@ class game:
             y=configurations[0]['pos'][i][1]
             addFigure(board, figure[figIdx], x, y, configurations[0]['figOR'][i][1],configurations[0]['figOR'][i][2], True)
 
-class Parent:
-    def __init__(self, name):
-        self.name=name
-        self.pattr="Klaus"
-
-class Child(Parent):
-    def __init__(self, name):
-        super().__init__(name)
-
-if 1==0:
-    p=Parent("Paul")
-    print(p.name)
-    print(p.pattr)
-    c=Child("Franz")
-    print(c.name)
-    print(c.pattr)
-
-if __name__=="main":
+if __name__=="__main__":
     myGame=game()
     myGame.run()
