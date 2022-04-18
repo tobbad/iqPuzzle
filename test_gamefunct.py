@@ -3,7 +3,7 @@
 """
     Created on 16.2.2014
 
-    Test for fixpoint
+    Rotate keys
 
     @author: Tobias Badertscher
 
@@ -12,14 +12,19 @@ import sys
 import unittest
 from  iqPuzzle import *
 
-class test_rotate(unittest.TestCase):
+class TestRotateKeys(unittest.TestCase):
     def setUp(self):
+        print("Start Test")
         pass
 
     def tearDown(self):
+        print("Tear down test")
         pass
+    
+    
 
-    def testRot0(self):
+    def test_Rotate_0(self):
+        print("Rotate 0 Degree")
         key={'color':TRED, 'tile':[[1,1,1,1], [1,0,0,0]], 'pos':(7,1), 'text':'F1'} #RED
         expKey=[[1,1,1,1], [1,0,0,0]]
         res = rotateKey(key,0)
