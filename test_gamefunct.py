@@ -11,6 +11,7 @@
 import sys
 import unittest
 from  iqPuzzle import *
+import copy
 
 class TestRotateKeys(unittest.TestCase):
     def setUp(self):
@@ -21,14 +22,39 @@ class TestRotateKeys(unittest.TestCase):
         print("Tear down test")
         pass
     
-    
+    def test_Rot(self):
+        pass
 
     def test_Rotate_0(self):
         print("Rotate 0 Degree")
-        key={'color':TRED, 'tile':[[1,1,1,1], [1,0,0,0]], 'pos':(7,1), 'text':'F1'} #RED
-        expKey=[[1,1,1,1], [1,0,0,0]]
+        key=key00()
+        expLayout=key00()
         res = rotateKey(key,0)
-        self.assertEqual(res, expKey)
+        self.assertTrue(key==res)
+
+    def test_Rotate_90(self):
+        print("Rotate 90 Degree")
+        key=key00()
+        expKey= key00()
+        expKey.figure=np.array([[1,1],[0,1], [0,1],[0,1]])
+        res = rotateKey(key,90)
+        self.assertTrue(res==expKey)
+
+    def test_Rotate_180(self):
+        print("Rotate 180 Degree")
+        key=key00()
+        expKey= key00()
+        expKey.figure=np.array([[0,0,0,1],[1,1,1,1] ])
+        res = rotateKey(key,180)
+        self.assertTrue(res==expKey)
+
+    def test_Rotate_270(self):
+        print("Rotate 270 Degree")
+        key=key00()
+        expKey= key00()
+        expKey.figure=np.array([[1,0],[1,0], [1,0],[1,1]])
+        res = rotateKey(key,270)
+        self.assertTrue(res==expKey)
 
 
 if __name__ == '__main__':
