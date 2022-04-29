@@ -10,9 +10,9 @@
 """
 import sys
 import unittest
-from  iqPuzzle import *
+from  iqPuzzle import rotateKey, key,   key00
 import copy
-
+dir()
 class TestRotateKeys(unittest.TestCase):
     def setUp(self):
         print("Start Test")
