@@ -43,24 +43,25 @@ placementRange=((12,15),(2,5))
 def transformMatrix(rotationGrad):
     rotationPi=rotationGrad/180.0*math.pi
     R = np.array([[math.cos(rotationPi),-math.sin(rotationPi)],[math.sin(rotationPi),math.cos(rotationPi)]])
-    #print("| %.1f  %.1f |" % (R[0][0], R[0][1]))
-    #print("| %.1f  %.1f |" % (R[1][0], R[1][1]))
+    print("| %.1f  %.1f |" % (R[0][0], R[0][1]))
+    print("| %.1f  %.1f |" % (R[1][0], R[1][1]))
     return R
 
 def rotateKey(key, rotationGrad):
-     rotationGrad=int(rotationGrad)
-     #print("In key")
-     #print(key)
+     rotationGrad=int(-rotationGrad)
+     print("In key rotate by %d degree" %(rotationGrad) )
+     print(key)
      rot =transformMatrix(rotationGrad)
      inCenter = ( 0.5*(key.shape[0]-1), 0.5*(key.shape[1]-1))
      #print("inCenter", inCenter)
      xvec = np.zeros(2)
-     if rotationGrad in (0,180):
+     if rotationGrad in (0,180, 360):
          rKey = np.zeros([key.shape[0], key.shape[1]], dtype=float)
      else:
          rKey = np.zeros([key.shape[1], key.shape[0]], dtype=float)
      outCenter = (0.5*(rKey.shape[0]-1), 0.5*(rKey.shape[1]-1))
      #print("outCenter", outCenter)
+     #print(rKey, rKey.shape)
      for x in range(key.shape[0]):
          for y in range(key.shape[1]):
              xvec[0] = x-inCenter[0]
@@ -70,11 +71,11 @@ def rotateKey(key, rotationGrad):
              xRr[0] += outCenter[0] 
              xRr[1] += outCenter[1]
              xRr = (int(round(xRr[0])), int(round(xRr[1])))
-             #print("x,y  %d, %d (%.1f, %.1f)-> (%d) %d %d" % ( x,y, xvec[0], xvec[1],key.figure[x][y],xRr[0], xRr[1]))
+             print("x,y  %d, %d (%.1f, %.1f)-> (%d) %d %d" % ( x,y, xvec[0], xvec[1],key.figure[x][y],xRr[0], xRr[1]))
              rKey[xRr[0]][xRr[1]]=key.figure[x][y]
      key.figure=rKey
-     #print("Rotated Key",)
-     #print(key)
+     print("Rotated Key at %d Degree " %(rotationGrad))
+     print(key)
      return key
 
 
@@ -86,11 +87,11 @@ class key:
     
     @property
     def ySize(self):
-        return self.figure.shape[0]
+        return self.figure.shape[1]
    
     @property
     def xSize(self):
-        return self.figure.shape[1]
+        return self.figure.shape[0]
     
     def __eq__(self, other):
         if self.figure.shape[0] != other.figure.shape[0]:
@@ -118,80 +119,81 @@ class key:
 
 class key01(key):
     def __init__(self):
-        self.figure=np.array([[1,1,0,0], [0,1,1,1]])
+        self.figure=np.transpose(np.array([[1,1,0,0], [0,1,1,1]]))
         self.color=PINK
-        self.pos=(1,7)
+        self.pos=(1, 7)
 
 class key02(key):
     def __init__(self):
-        self.figure=np.array([[1,0,0], [1,0,0], [1,1,1]])
+        self.figure=np.transpose(np.array([[1,0,0], [1,0,0], [1,1,1]]))
         self.color=BLUE
-        self.pos=(1,10)
+        self.pos=(1 ,10)
     
 class key03(key):
     def __init__(self):
-        self.figure=np.array([[1,1,1,1], [0,1,0,0]])
+        self.figure=np.transpose(np.array([[1,1,1,1], [0,1,0,0]]))
         self.color=YELLOW
-        self.pos=(1,14)
+        self.pos=(1, 14)
 
 class key04(key):
     def __init__(self):
-        self.figure=np.array([[1,1,1], [0,1,0]])
-        self.color=GREEN
-        self.pos=(6,7)
-    
+        self.figure=np.transpose(np.array([[1,0,0], [1,1,0], [0,1,1]]))
+        self.color=DVIOLET
+        self.pos=(6,10)
+
 class key05(key):
     def __init__(self):
-        self.figure=np.array([[1,0], [1,1]])
-        self.color=CYAN
-        self.pos=(6,10)
-    
+        self.figure=np.transpose(np.array([[1,1,1], [0,1,0]]))
+        self.color=GREEN
+        self.pos=(6,7)
+
 class key06(key):
     def __init__(self):
-        self.figure=np.array([[1,0,0], [1,1,1]])
-        self.color=DBLUE
+        self.figure=np.transpose(np.array([[1,1,1], [0,1,1]]))
+        self.color=DCYAN
         self.pos=(6,14)
     
 class key07(key):
     def __init__(self):
-        self.figure=np.array([[1,0,0], [1,1,0], [0,1,1]])
-        self.color=DVIOLET
+        self.figure=np.transpose(np.array([[1,0], [1,1]]))
+        self.color=CYAN
         self.pos=(10,7)
     
 class key08(key):
     def __init__(self):
-        self.figure=np.array([[1,1,0], [0,1,1], [0,1,0]])
+        self.figure=np.transpose(np.array([[1,1,0], [0,1,1], [0,1,0]]))
         self.color=ORANGE
-        self.pos=(10,11)
-    
+        self.pos=(10,10)
+
 class key09(key):
     def __init__(self):
-        self.figure=np.array([[1,0], [1,1], [0,1]])
-        self.color=DRED
-        self.pos=(10,15)
+        self.figure=np.transpose(np.array([[1,0,1], [1,1,1]]))
+        self.color=DGREEN
+        self.pos=(10,14)
     
 class key10(key):
     def __init__(self):
-        self.figure=np.array([[1,1,1], [0,1,1]])
-        self.color=DCYAN
+        self.figure=np.transpose(np.array([[1,0,0], [1,1,1]]))
+        self.color=DBLUE
         self.pos=(14,7)
     
 class key11(key):
     def __init__(self):
-        self.figure=np.array([[1,0,1], [1,1,1]])
-        self.color=DGREEN
+        self.figure=np.transpose(np.array([[1,0], [1,1], [0,1]]))
+        self.color=DRED
         self.pos=(14,10)
+    
     
 class key12(key):
     def __init__(self):
         
-        self.figure=np.array([[1,0,0,0], [1,1,1,1]])
+        self.figure=np.transpose(np.array([[1,0,0,0], [1,1,1,1]]))
         self.color=RED, 
-        self.pos=(14,13)
+        self.pos=(14,14)
     
 class keyBlank(key):
     def __init__(self):
-        self.figure=np.array([[1,1,1,1], [1,1,1,1], [1,1,1,1], [1,1,1,1]])
+        self.figure=np.transpose(np.array([[1,1,1,1], [1,1,1,1], [1,1,1,1], [1,1,1,1]]))
         self.color=BLACK
         self.pos=(-1,-1)
     
@@ -241,9 +243,9 @@ class board:
         print("Clear Area x: (%d,%d) y:(%d,%d) with (%d, %d,%d)" %(offset[0], offset[0]+self.size[0],offset[1], offset[1]+self.size[1], color[0], color[1], color[2]))
         for x in range(offset[0], offset[0]+self.size[0]):
             for y in range(offset[1], offset[1]+self.size[1]):
-                print("SetArea @ (%d,%d)" %(x,y))
+                #print("SetArea @ (%d,%d)" %(x,y))
                 self.board[y][x]=color
-                print("SetArea @ (%s)" %(str(self.board[y][x])))
+                #print("SetArea @ (%s)" %(str(self.board[y][x])))
         
 
     def getRange(self):
@@ -300,10 +302,10 @@ class board:
         for xPl, xPi in zip(xPlSeq,xPiSeq):
             for yPl,yPi in zip(yPlSeq, yPiSeq):
                 #print("xPi %d, yPi %d, xPl %d yPl %d  %s"%(xPi,yPi,xPl, yPl, str(retKey.shape)))
-                if key.figure[yPi][xPi]==1:
-                    self.board[yPl+ypos][xPl+xpos] =  key.color
+                if key.figure[xPi][yPi]==1:
+                    self.board[xPl+xpos][yPl+ypos] =  key.color
                 else:
-                    self.board[yPl+ypos][xPl+xpos] =  WHITE
+                    self.board[xPl+xpos][yPl+ypos] =  WHITE
                 #print("Set at %d, %d %s m=%d o=%d" % (xPl+xpos,yPl+ypos, str(self.board[xPl+xpos][yPl+ypos]), mirror, rotationGrad  ))
                 #print("O: rot:%d (%d, %d) -> (%d, %d)" %(rotationGrad, xPl,yPl, xPi, yPi))
         print("OutKey: %s\nwith %d Degree @ (%d,%d)" %( str(retKey), rotationGrad, xpos, ypos))
@@ -339,20 +341,20 @@ class board:
         print("Draw")
         for x in range(self.offset[0], self.offset[0]+self.size[0]):
             for y in range(self.offset[1], self.offset[1]+self.size[1]):
-                if x==13 and y==1:
-                    print("Color at %d, %d =  %s"%(x,y, str( self.board[x][y]) ))
+                #if x==13 and y==1:
+                #    print("Color at %d, %d =  %s"%(x,y, str( self.board[x][y]) ))
                 xp=self.gridSize*(x+1)
                 yp=self.gridSize*(y+1)
                 #print(x,y,xp,yp)
-                pygame.draw.circle(self.surface, self.board[x][y] ,(yp,xp), self.circleRadius)
+                pygame.draw.circle(self.surface, self.board[x][y] ,(xp,yp), self.circleRadius)
         pygame.display.update()
 
-def addKeyName(key):
-    text=basicFont.render(key.text,True, WHITE, BLACK)
-    textBox=text.get_rect()
-    print(key['pos'][0])
-    #pygame.draw.rect(surface, RED,(key['pos'][0]*gridSize, key['pos'][1]*gridSize* (textBox.left+ 20),textBox.right+20, textBox.height+40))
-    surface.blit(text,textBox)
+    def addKeyName(self, key):
+        text=basicFont.render(key.text,True, WHITE, BLACK)
+        textBox=text.get_rect()
+        print(key['pos'][0])
+        #pygame.draw.rect(surface, RED,(key['pos'][0]*gridSize, key['pos'][1]*gridSize* (textBox.left+ 20),textBox.right+20, textBox.height+40))
+        surface.blit(text,textBox)
 
 
 class placeRange(board):
@@ -426,7 +428,7 @@ class game:
                 if pygame.mouse.get_focused() and event.type==4:
                     x,y=self.board.getPlaygroundPos(event.pos[0], event.pos[1])
                     self.inPlacementRange = self.board.isInPlacementRange(x,y)
-                    print("focused %s " % (str(self.board.getPlaygroundPos(event.pos[0], event.pos[1]))))
+                    #print("focused %s " % (str(self.board.getPlaygroundPos(event.pos[0], event.pos[1]))))
                 if event.type == KEYUP:
                     print(event.key, K_ESCAPE)
                     if event.key == K_ESCAPE:
@@ -440,7 +442,7 @@ class game:
                     x/=gridSize
                     y/=gridSize
                     if event.key in self.rotateKeys:
-                        self.rotate =(self.rotate+90)%360
+                        self.rotate =(self.rotate-90)%360
                         print("R or r at (%d, %d) Range((%d,%d),(%d %d)), rotate %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], self.rotate))
                         self.placeRange.setArea(BLACK)
                         self.board.addKey( self.board.keys[selectedKey], self.placementRange[0][0],self.placementRange[1][0], self.mirror,self.rotate, True)

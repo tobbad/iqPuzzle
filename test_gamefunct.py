@@ -10,7 +10,9 @@
 """
 import sys
 import unittest
-from  iqPuzzle import rotateKey, key,   key00
+from  iqPuzzle import rotateKey
+from iqPuzzle import key12 as okey 
+import numpy as np
 import copy
 dir()
 class TestRotateKeys(unittest.TestCase):
@@ -25,34 +27,38 @@ class TestRotateKeys(unittest.TestCase):
     def test_Rot(self):
         pass
 
+
     def test_Rotate_0(self):
         print("Rotate 0 Degree")
-        key=key00()
-        expLayout=key00()
-        res = rotateKey(key,0)
+        key=okey()
+        expLayout0=okey()
+        res = rotateKey(key,0) # is[[1,0,0,0], [1,1,1,1]]
         self.assertTrue(key==res)
 
+    #@unittest.skip("Skip 90 rotation test")
     def test_Rotate_90(self):
         print("Rotate 90 Degree")
-        key=key00()
-        expKey= key00()
-        expKey.figure=np.array([[1,1],[0,1], [0,1],[0,1]])
+        key=okey()
+        expKey= okey()#[[1,1,0,0], [0,1,1,1]]
+        expKey.figure=np.array([[1,1],[1,0], [1,0],[1,0]])
         res = rotateKey(key,90)
         self.assertTrue(res==expKey)
 
+    #@unittest.skip("Skip 180 rotation test")
     def test_Rotate_180(self):
         print("Rotate 180 Degree")
-        key=key00()
-        expKey= key00()
-        expKey.figure=np.array([[0,0,0,1],[1,1,1,1] ])
+        key=okey()
+        expKey= okey()
+        expKey.figure=np.array([[1,1,1,1],[0,0,0,1] ])
         res = rotateKey(key,180)
         self.assertTrue(res==expKey)
 
+    #@unittest.skip("Skip 270 rotation test")
     def test_Rotate_270(self):
         print("Rotate 270 Degree")
-        key=key00()
-        expKey= key00()
-        expKey.figure=np.array([[1,0],[1,0], [1,0],[1,1]])
+        key=okey()
+        expKey= okey()
+        expKey.figure=np.array([[0,1],[0,1], [0,1],[1,1]])
         res = rotateKey(key,270)
         self.assertTrue(res==expKey)
 
