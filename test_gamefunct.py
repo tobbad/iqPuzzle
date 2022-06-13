@@ -49,7 +49,7 @@ class TestRotateKeys(unittest.TestCase):
         print("Rotate 180 Degree")
         key=okey()
         expKey= okey()
-        expKey.figure=np.array([[1,1,1,1],[0,0,0,1] ])
+        expKey.figure=np.transpose(np.array([[1,1,1,1],[0,0,0,1]]))
         res = rotateKey(key,180)
         self.assertTrue(res==expKey)
 
@@ -58,7 +58,7 @@ class TestRotateKeys(unittest.TestCase):
         print("Rotate 270 Degree")
         key=okey()
         expKey= okey()
-        expKey.figure=np.array([[0,1],[0,1], [0,1],[1,1]])
+        expKey.figure=np.transpose(np.array([[0,1],[0,1], [0,1],[1,1]]))
         res = rotateKey(key,270)
         self.assertTrue(res==expKey)
 

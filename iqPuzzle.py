@@ -47,39 +47,51 @@ def transformMatrix(rotationGrad):
     print("| %.1f  %.1f |" % (R[1][0], R[1][1]))
     return R
 
-def rotateKey(key, rotationGrad):
+def rotateKey(key, rotationGrad, p=True):
      rotationGrad=int(rotationGrad)
-     print("In key rotate by %d degree" %(rotationGrad) )
-     print(key)
+     if p:
+         print("In key rotate by %d degree" %(rotationGrad) )
+         print(key)
      rot =transformMatrix(rotationGrad)
      inCenter = ( 0.5*(key.shape[0]-1), 0.5*(key.shape[1]-1))
      #print("inCenter", inCenter)
      xvec = np.zeros(2)
+     rKey=copy.deepcopy(key)
      if rotationGrad in (0,180, 360):
-         rKey = np.zeros([key.shape[0], key.shape[1]], dtype=float)
+         rKey.figure = np.zeros([key.shape[0], key.shape[1]], dtype=float)
      elif rotationGrad in (90,270):
-         rKey = np.zeros([key.shape[1], key.shape[0]], dtype=float)
-     outCenter = (0.5*(rKey.shape[0]-1), 0.5*(rKey.shape[1]-1))
+         rKey.figure = np.zeros([key.shape[1], key.shape[0]], dtype=float)
+     outCenter = (0.5*(rKey.xSize-1), 0.5*(rKey.ySize-1))
      #print("outCenter", outCenter)
-     #print(rKey, rKey.shape)
+     #print(rKey)
      for x in range(key.shape[0]):
          for y in range(key.shape[1]):
              xvec[0] = x-inCenter[0]
              xvec[1] = y-inCenter[1]
              
              xRr =rot.dot(xvec)
+             #print(xRr)
              xRr[0] += outCenter[0] 
              xRr[1] += outCenter[1]
              xRr = (int(round(xRr[0])), int(round(xRr[1])))
-             print("x,y  %d, %d (%.1f, %.1f)-> (%d) %d %d" % ( x,y, xvec[0], xvec[1],key.figure[x][y],xRr[0], xRr[1]))
-             rKey[xRr[0]][xRr[1]]=key.figure[x][y]
-     key.figure=rKey
-     print("OutKey at %d Degree " %(rotationGrad))
-     print(key)
-     return key
+             if p:
+                 print("x,y  %d, %d (%.1f, %.1f)-> (%d)" % ( x,y, xRr[0], xRr[1], key.figure[x][y]))
+             rKey.figure[xRr[0]][xRr[1]]=key.figure[x][y]
+             #print(rKey.figure[round(xRr[0])][round(xRr[1])])
+     if p:
+         print("OutKey at %d Degree " %(rotationGrad))
+         print(rKey)
+     return rKey
 
 
 class key:
+    
+    def __init__(self):
+        self.pos=(0,0)
+        self.color=BLACK 
+        self.figure=np.transpose(np.array([[1,1,1,1], [1,1,1,1], [1,1,1,1], [1,1,1,1]]))
+        self.mirror=False
+        self.rotateGrad=0
     
     @property
     def shape(self):
@@ -115,7 +127,18 @@ class key:
             line+='\n'
         line=line[:-1]
         return line
-                
+    
+    def mirror(self):
+        retKey = copy.deepcopy(self)
+        xPiSeq=list(range(self.xSize))
+        xPlSeq=list(range(retKey.xSize))
+        xPiSeq.reverse()
+        yPlSeq=list(range(retKey.ySize))
+        #print(xPiSeq, yPiSeq, xPlSeq, yPlSeq)
+        for xPl,xPi in zip(xPlSeq, xPiSeq):
+            for yPl in yPlSeq:
+                retKey.figure[xPl][yPl]=self.figure[xPi][yPl]
+        return retKey
 
 class key01(key):
     def __init__(self):
@@ -208,7 +231,6 @@ class board:
         self.gridSize=25
         self.circleRadius= 10
         self.keys=[key01(), key02(), key03(), key04(), key05(), key06(), key07(), key08(), key09(), key10(), key11(), key12(), keyBlank()]
-        print(self.keys[0])
         if self.offset[0]<0 or self.offset[1]<0:
             type(self).board=[[(0,0,0) for i in range(self.size[0])] for j in range(self.size[1])]
             self.graphicInit()
@@ -277,6 +299,7 @@ class board:
         # orientation:
         # Rotate in degree counter clock wise
         # always place key at given location on the board
+        isPlaceable =True
         rotationGrad=int(rotationGrad)
         xposMax=xpos+key.xSize
         yposMax=ypos+key.ySize
@@ -293,26 +316,25 @@ class board:
                 print("y: %d, %d<=%d"%(ypos, yposMax, bsizey))
                 print("Drop figure due to ypos")
                 return -1,-1
-        xPlSeq=list(range(retKey.xSize))
-        retKey= rotateKey(key, rotationGrad)
-        xPiSeq=list(range(key.xSize))
+        retKey= rotateKey(key, rotationGrad, False)
         if mirror:
-            xPiSeq.reverse()
-        yPiSeq=list(range(key.ySize))
+            retKey=retKey.mirror()
+        xPlSeq=list(range(retKey.xSize))
         yPlSeq=list(range(retKey.ySize))
         #print(xPiSeq, yPiSeq, xPlSeq, yPlSeq)
-        for xPl, xPi in zip(xPlSeq,xPiSeq):
-            for yPl,yPi in zip(yPlSeq, yPiSeq):
+        print("OutKey: %s\nwith %d Degree @ (%d,%d)" %( str(retKey), rotationGrad, xpos, ypos))
+        print(xPlSeq, yPlSeq )
+        for xPl in xPlSeq:
+            for yPl in yPlSeq:
                 #print("xPi %d, yPi %d, xPl %d yPl %d  %s"%(xPi,yPi,xPl, yPl, str(retKey.shape)))
-                if key.figure[xPi][yPi]==1:
+                if retKey.figure[xPl][yPl]==1:
                     self.board[xPl+xpos][yPl+ypos] =  key.color
                 else:
                     self.board[xPl+xpos][yPl+ypos] =  WHITE
-                #print("Set at %d, %d %s m=%d o=%d" % (xPl+xpos,yPl+ypos, str(self.board[xPl+xpos][yPl+ypos]), mirror, rotationGrad  ))
+                print("Set at %d, %d %s m=%d o=%d" % (xPl+xpos,yPl+ypos, str(self.board[xPl+xpos][yPl+ypos]), mirror, rotationGrad  ))
                 #print("O: rot:%d (%d, %d) -> (%d, %d)" %(rotationGrad, xPl,yPl, xPi, yPi))
-        print("OutKey: %s\nwith %d Degree @ (%d,%d)" %( str(retKey), rotationGrad, xpos, ypos))
-        print(self)
         self.draw()
+        return isPlaceable
 
     def setKeys(self):
         for i in range(len(self.keys)):
@@ -357,20 +379,28 @@ class board:
         textBox=text.get_rect()
         print(key['pos'][0])
         #pygame.draw.rect(surface, RED,(key['pos'][0]*gridSize, key['pos'][1]*gridSize* (textBox.left+ 20),textBox.right+20, textBox.height+40))
-        surface.blit(text,textBox)
+        self.surface.blit(text,textBox)
 
 
 class placeRange(board):
         def __init__(self, xoffset=13, yoffset=1):
             super().__init__(xoffset, yoffset)
             self.size=(4,4)
+            print(self.board)
+            
         
 
 class  playGround(board):
         def __init__(self, xoffset=1, yoffset=1):
             super().__init__(xoffset, yoffset)
             self.size=(11,5)
-
+        
+        def config(self):
+            res = []
+            return res
+        
+        def addKey(self, x , y, key):
+            return
 
 
 
@@ -383,21 +413,18 @@ class game:
         #self.placeRange.draw()
         self.placementRange = self.placeRange.getRange()
         self.playGround=playGround()
+        self.playGround.setArea(cc.COLDGREY)
         #self.playGround.resetBoard((255, 255, 255))
         self.selectedKey=-1
         self.rotateKeys=[pygame.locals.K_r]
         self.mirrorKeys=[pygame.locals.K_s,pygame.locals.K_m]
         self.inPlacementRange=True
-        self.rotate=0
-        self.mirror=False
-
-    def draw(self):
-        self.placeRange.draw()
-        self.playGround.draw()
+        self.board.draw()
+        self.key=None
 
     def run(self):
         while True:
-            self.inPlacementRange=False
+            self.isPlaceRange=False
             for event in pygame.event.get():
                 #self.draw()
                 if event.type == pl.QUIT:
@@ -405,31 +432,35 @@ class game:
                     sys.exit()
                 if event.type == pl.MOUSEBUTTONDOWN:
                     selectedKey=self.board.getKeyCode(event.pos[0], event.pos[1])
-                    print("Selected key is nr: %d" % selectedKey)
-                    #Clear Placement range
-                    self.placeRange.setArea(BLACK)
-                    self.board.draw()
-                    self.board.addKey( self.board.keys[selectedKey], self.placementRange[0][0], self.placementRange[1][0], self.rotate, self.mirror, True)
                     x,y=self.board.getPlaygroundPos(event.pos[0], event.pos[1])
-                    self.isPlaceRange=self.board.isInPlacementRange(x,y)
-                    if self.isPlaceRange:
-                        print(event.pos[0], event.pos[1])
-                    isPlayGroundRange=self.playGround.isInPlacementRange(x,y)
-                    self.isPlaceRange=self.placeRange.isInPlacementRange(x,y)
+                    if y<7:
+                        print("Selected key is nr: %d" % selectedKey)
+                        #Clear Placement range
+                        self.key=copy.deepcopy(self.board.keys[selectedKey])
+                        self.placeRange.setArea(BLACK)
+                        self.board.draw()
+                        self.board.addKey( self.key, self.placementRange[0][0], self.placementRange[1][0], self.key.rotate, self.key.mirror, True)
                     if selectedKey>=0:
-                        print("Place at Location (%d, %d), inRange %d, inPlace %d" % (self.placementRange[0][0], self.placementRange[1][0],isPlayGroundRange,self.isPlaceRange))
-                        self.rotate=0
-                        self.mirror=False
-                        if isPlayGroundRange:
-                            self.board.addKey( self.board.keys[selectedKey], x, y, 0,0, True)
-                        if self.isPlaceRange:
+                        print("Place at Location (%d, %d), inRange %d, inPlace %d" % (self.placementRange[0][0], self.placementRange[1][0],self.isPlayGroundRange,self.isPlaceRange))
+                        if self.placeRange.isInPlacementRange(x,y):
                             print("Place in Placerange")
-                            self.board.addKey( self.board.keys[selectedKey], placementRange[0][0], placementRange[1][0], self.rotate, self.mirror, True)
+                            self.board.addKey( self.key, placementRange[0][0], placementRange[1][0], self.key.rotateGrad, self.key.mirror, True)
                     self.board.draw()
                 if event.type == pl.MOUSEBUTTONUP:
                     x,y=self.placeRange.getPlaygroundPos(event.pos[0], event.pos[1])
                     print("BTN UP (%d, %d)" %(x,y))
-
+                    x,y=self.board.getPlaygroundPos(event.pos[0], event.pos[1])
+                    self.isPlayGroundRange=self.playGround.isInPlacementRange(x,y)
+                    if self.isPlaygroundRange and selectedKey>=0:
+                        print("Place at Location (%d, %d), inRange %d, inPlace %d" % (x, y,self.isPlayGroundRange,self.isPlaceRange))
+                        if self.isPlayGroundRange:
+                            self.board.addKey( self.key, x, y, self.key.mirror, self.key.rotationGrad, True)
+                        if self.isPlaceRange:
+                            print("Place in Placerange")
+                            if self.board.addKey( self.board.keys[selectedKey], placementRange[0][0], placementRange[1][0], self.key.rotateGRad, self.key.mirror, True):
+                                self.playGround.append(self.key)
+                    self.board.draw()
+ 
                 if pygame.mouse.get_focused() and event.type==4:
                     x,y=self.board.getPlaygroundPos(event.pos[0], event.pos[1])
                     self.inPlacementRange = self.board.isInPlacementRange(x,y)
@@ -447,15 +478,15 @@ class game:
                     x/=gridSize
                     y/=gridSize
                     if event.key in self.rotateKeys:
-                        self.rotate =(self.rotate+90)%360
+                        self.key.rotate =(self.key.rotateGrad+90)%360
                         print("R or r at (%d, %d) Range((%d,%d),(%d %d)), rotate %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], self.rotate))
                         self.placeRange.setArea(BLACK)
-                        self.board.addKey( self.board.keys[selectedKey], self.placementRange[0][0],self.placementRange[1][0], self.mirror,self.rotate, True)
+                        self.board.addKey( self.key, self.placementRange[0][0],self.placementRange[1][0], self.key.mirror,self.key.rotateGrad, True)
                     if event.key == pygame.locals.K_m:
-                        self.mirror =(self.mirror+1)%2==1
+                        self.key.mirror =(self.key.mirror+1)%2==1
                         print("S or s at (%d, %d) Range((%d,%d),(%d %d)), mirror %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], self.mirror))
                         self.placeRange.setArea(BLACK)
-                        self.board.addKey( self.board.keys[selectedKey], self.placementRange[0][0],self.placementRange[1][0], self.mirror ,self.rotate, True)
+                        self.board.addKey( self.board.keys[selectedKey], self.placementRange[0][0],self.placementRange[1][0], self.mirror ,self.rotateGrad, True)
                         self.board.draw()
                     if (x > self.placementRange[0][0] and x<self.placementRange[1][0]) and ( y > self.placementRange[1][1] and y<self.placementRange[1][1]):
                             print("In range")
