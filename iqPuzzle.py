@@ -1,5 +1,4 @@
-import sys
-sys.path.append('../parentdirectory')
+#import sys.path.append('../parentdirectory')
 import pygame
 import pygame.locals as pl 
 import numpy as np
