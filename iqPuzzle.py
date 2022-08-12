@@ -91,7 +91,7 @@ class key:
         self.color=BLACK 
         self.figure=np.transpose(np.array([[1,1,1,1], [1,1,1,1], [1,1,1,1], [1,1,1,1]]))
         self.mirror=False
-        self.rotateGrad=0
+        self.rotationGrad=0
     
     @property
     def shape(self):
@@ -142,66 +142,77 @@ class key:
 
 class key01(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,1,0,0], [0,1,1,1]]))
         self.color=PINK
         self.pos=(1, 7)
 
 class key02(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,0,0], [1,0,0], [1,1,1]]))
         self.color=BLUE
         self.pos=(1 ,10)
     
 class key03(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,1,1,1], [0,1,0,0]]))
         self.color=YELLOW
         self.pos=(1, 14)
 
 class key04(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,0,0], [1,1,0], [0,1,1]]))
         self.color=DVIOLET
         self.pos=(6,10)
 
 class key05(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,1,1], [0,1,0]]))
         self.color=GREEN
         self.pos=(6,7)
 
 class key06(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,1,1], [0,1,1]]))
         self.color=DCYAN
         self.pos=(6,14)
     
 class key07(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,0], [1,1]]))
         self.color=CYAN
         self.pos=(10,7)
     
 class key08(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,1,0], [0,1,1], [0,1,0]]))
         self.color=ORANGE
         self.pos=(10,10)
 
 class key09(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,0,1], [1,1,1]]))
         self.color=DGREEN
         self.pos=(10,14)
     
 class key10(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,0,0], [1,1,1]]))
         self.color=DBLUE
         self.pos=(14,7)
     
 class key11(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,0], [1,1], [0,1]]))
         self.color=DRED
         self.pos=(14,10)
@@ -209,13 +220,14 @@ class key11(key):
     
 class key12(key):
     def __init__(self):
-        
+        super().__init__()       
         self.figure=np.transpose(np.array([[1,0,0,0], [1,1,1,1]]))
         self.color=RED, 
         self.pos=(14,14)
     
 class keyBlank(key):
     def __init__(self):
+        super().__init__()
         self.figure=np.transpose(np.array([[1,1,1,1], [1,1,1,1], [1,1,1,1], [1,1,1,1]]))
         self.color=BLACK
         self.pos=(-1,-1)
@@ -279,7 +291,7 @@ class board:
         isPlacement= x>=self.offset[0] and x<self.offset[0]+self.size[0]
         #print("IsPlacment range x %d" % isPlacement)
         isPlacement&= y>=self.offset[1] and y<self.offset[1]+self.size[1]
-        #print("IsPlacment range x and y %d" % isPlacement)
+        print("IsPlacment range x and y %d" % isPlacement)
         return isPlacement
 
     def rotateKey(self, key, rotationGrad):
@@ -431,33 +443,33 @@ class game:
                     pygame.quit()
                     sys.exit()
                 if event.type == pl.MOUSEBUTTONDOWN:
-                    selectedKey=self.board.getKeyCode(event.pos[0], event.pos[1])
+                    self.selectedKey=self.board.getKeyCode(event.pos[0], event.pos[1])
                     x,y=self.board.getPlaygroundPos(event.pos[0], event.pos[1])
-                    if y<7:
-                        print("Selected key is nr: %d" % selectedKey)
+                    if y>7:
+                        print("Selected key is nr: %d" % self.selectedKey)
                         #Clear Placement range
-                        self.key=copy.deepcopy(self.board.keys[selectedKey])
+                        self.key=copy.deepcopy(self.board.keys[self.selectedKey])
                         self.placeRange.setArea(BLACK)
                         self.board.draw()
-                        self.board.addKey( self.key, self.placementRange[0][0], self.placementRange[1][0], self.key.rotate, self.key.mirror, True)
-                    if selectedKey>=0:
-                        print("Place at Location (%d, %d), inRange %d, inPlace %d" % (self.placementRange[0][0], self.placementRange[1][0],self.isPlayGroundRange,self.isPlaceRange))
+                        self.board.addKey( self.key, self.placementRange[0][0], self.placementRange[1][0], self.key.rotationGrad, self.key.mirror, True)
+                    if self.selectedKey>=0:
+                        print("Place at Placementrange (%d, %d), inRange %d, inPlace %d" % (self.placementRange[0][0], self.placementRange[1][0],self.playGround.isInPlacementRange(x,y),self.isPlaceRange))
                         if self.placeRange.isInPlacementRange(x,y):
                             print("Place in Placerange")
-                            self.board.addKey( self.key, placementRange[0][0], placementRange[1][0], self.key.rotateGrad, self.key.mirror, True)
+                            self.board.addKey( self.key, placementRange[0][0], placementRange[1][0], self.key.rotationGrad, self.key.mirror, True)
                     self.board.draw()
                 if event.type == pl.MOUSEBUTTONUP:
-                    x,y=self.placeRange.getPlaygroundPos(event.pos[0], event.pos[1])
+                    x,y=self.board.getPlaygroundPos(event.pos[0], event.pos[1])
                     print("BTN UP (%d, %d)" %(x,y))
                     x,y=self.board.getPlaygroundPos(event.pos[0], event.pos[1])
-                    self.isPlayGroundRange=self.playGround.isInPlacementRange(x,y)
-                    if self.isPlaygroundRange and selectedKey>=0:
-                        print("Place at Location (%d, %d), inRange %d, inPlace %d" % (x, y,self.isPlayGroundRange,self.isPlaceRange))
-                        if self.isPlayGroundRange:
+                    print(self.playGround.isInPlacementRange(x,y), self.selectedKey)
+                    if self.playGround.isInPlacementRange(x,y) and self.selectedKey>=0:
+                        print("Place at Playfield (%d, %d), inRange %d, inPlace %d" % (x, y,self.playGround.isInPlacementRange(x,y),self.isPlaceRange))
+                        if self.playGround.isInPlacementRange(x,y):
                             self.board.addKey( self.key, x, y, self.key.mirror, self.key.rotationGrad, True)
                         if self.isPlaceRange:
                             print("Place in Placerange")
-                            if self.board.addKey( self.board.keys[selectedKey], placementRange[0][0], placementRange[1][0], self.key.rotateGRad, self.key.mirror, True):
+                            if self.board.addKey( self.board.keys[self.selectedKey], placementRange[0][0], placementRange[1][0], self.key.rotationGrad, self.key.mirror, True):
                                 self.playGround.append(self.key)
                     self.board.draw()
  
@@ -478,15 +490,15 @@ class game:
                     x/=gridSize
                     y/=gridSize
                     if event.key in self.rotateKeys:
-                        self.key.rotate =(self.key.rotateGrad+90)%360
+                        self.key.rotationGrad =(self.key.rotationGrad+90)%360
                         print("R or r at (%d, %d) Range((%d,%d),(%d %d)), rotate %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], self.rotate))
                         self.placeRange.setArea(BLACK)
-                        self.board.addKey( self.key, self.placementRange[0][0],self.placementRange[1][0], self.key.mirror,self.key.rotateGrad, True)
+                        self.board.addKey( self.key, self.placementRange[0][0],self.placementRange[1][0], self.key.mirror,self.key.rotationGrad, True)
                     if event.key == pygame.locals.K_m:
                         self.key.mirror =(self.key.mirror+1)%2==1
                         print("S or s at (%d, %d) Range((%d,%d),(%d %d)), mirror %d" % (x,y,self.placementRange[0][0],self.placementRange[1][0],  self.placementRange[1][1], self.placementRange[1][1], self.mirror))
                         self.placeRange.setArea(BLACK)
-                        self.board.addKey( self.board.keys[selectedKey], self.placementRange[0][0],self.placementRange[1][0], self.mirror ,self.rotateGrad, True)
+                        self.board.addKey( self.board.keys[self.selectedKey], self.placementRange[0][0],self.placementRange[1][0], self.mirror ,self.rotationGrad, True)
                         self.board.draw()
                     if (x > self.placementRange[0][0] and x<self.placementRange[1][0]) and ( y > self.placementRange[1][1] and y<self.placementRange[1][1]):
                             print("In range")
