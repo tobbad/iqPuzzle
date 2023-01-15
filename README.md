@@ -8,21 +8,21 @@ Program to to handle the Boardgame
 - **Messdate**: Daten mit physikalischen Einheiten (z.B. °C)
 
 ## Einleitung
-Das Ziel dieses Projekts ist es einen Messdaten-Recorder mit einer Strommessung im 4-20 **mA** Bereich zu entwickeln. Die Rohdatenerfassung  soll nach der Projektspezifikation über 24 **h** lang mit einem (konfigurierbarem) Erfassungsintervall von 1 **s** bis mehreren **min** erfolgen. Als Erfassungshardware wird der Yocto-4-20mA-Rx [9] von der schweizer Firma Yoctopuc [8] verwendet. Die Rohdaten werden über eine konfigurierbare lineare Funktion in physikalische Messwerte umgerechnet. Die aufgezeichneten physischen Messwerte soll neben der Darstellung im (graphischen User Interface (GUI) auch auf der Harddisk als CSV File abgespeichert werden. Im GUI werden auch die aktuellen Min/Max/Mean Roh- und Messwerte nummerisch dargestellt.
+Das Ziel dieses Projekts ist es einen Messdaten-Recorder mit einer Strommessung im 4-20 **mA** Bereich zu entwickeln. Die Rohdatenerfassung  soll nach der Projektspezifikation über 24 **h** lang mit einem (konfigurierbarem) Erfassungsintervall von 1 **s** bis mehreren **min** erfolgen. Als Erfassungshardware wird der Yocto-4-20mA-Rx [9] von der schweizer Firma Yoctopuc [8] verwendet. Die Rohdaten werden über eine konfigurierbare lineare Funktion in physikalische Messwerte umgerechnet. Die Messwerte sollen neben der Darstellung im graphischen User Interface (GUI) auch auf der Harddisk als CSV File abgespeichert werden. Im GUI werden auch die aktuellen Roh- und Messwerte (und Min/Max/Einheit) nummerisch dargestellt.
 
-In zweiten Schritt soll das Projekt so erweitert werden, das aufgezeichneten Messwertdaten die als CSV Datei gelesen werden und über ein Yoctopuc[8] Emulator Modul [10] mit einem Strombereich von 4-20 **mA** ausgegeben werden. Der Verlauf der physikalischen Ausgabewerte soll im selben GUI, auf einem anderen Tab dargestellt werden.
+Im zweiten Schritt soll im Anschluss an die Arbeitsprobe das Projekt so erweitert werden, dass aufgezeichnete Messwertdaten die als CSV Datei gelesen werden und über ein Yoctopuc[8] Emulator Modul [10] mit einem Strombereich von 4-20 **mA** ausgegeben werden. Der Verlauf der physikalischen Ausgabewerte soll im selben GUI, auf einem anderen Tab dargestellt werden.
 
-Das Programm soll konfiguierbar 1-12 Messsensoren sowohl als Empänger als auch als Sender unterstützen. Als Konfigurationsdatei wird ein XML Format verwendet in dem die zu verwendenden Senoren und Emulatoren persistent abgespeichert werden.
+Das Programm soll eine konfiguierbare Anzahl Messsensoren sowohl als Empänger als auch als Sender unterstützen. Als Konfigurationsdatei wird ein XML Format verwendet, in dem die zu verwendenden Senoren und Emulatoren persistent abgespeichert werden.
 
-## Architektur
+## Architektur (grob skizziert, noch zu verbessern)
 Die persistente Konfiguration wird in das Programm geladen `configuration.py`. In einem nächsten Schritt wird das GUI gestartet. In der verwendeten Model-View-Contoller Architectur fungiert das GUI als View-Controller Komponente das in konfigurierten Erfassungsinterval die Messdaten vom `producer.py`Python modul abholt.
  
 ![Model View Controller Aufbau](./mvc.png)
 
 ## Graphic User Interface (GUI)
-Das Graphic User Interface (GUI) ist in der Datei `gui.py` implementiert. Als Bibliotheke wird PyQt [11] verwendet. Diese Biblioteke stellt die funktionalität zur verfügung um ein Graphisches Fenster platformunabnängig zu implementieren. Das hat `DataRecorder` steh in der Titlebar. Es folgt eine eine Menubar mit den Einträgen `File`und `About` .
+Das Graphic User Interface (GUI) ist in der Datei `gui.py` implementiert. Als Bibliotheke wird PyQt [11] verwendet. Diese Biblioteke stellt die Funktionalität zur verfügung um ein graphisches Fenster plattformunabnängig zu implementieren. Das hat `DataRecorder` steht in der Titelebar. Es folgt eine Menubar mit den Einträgen `File`und `About` .
 
-Im folgenden werden als Tabs  sowohl ein Recorder als auch ein Emulator Grafik dargestellt
+Im folgenden werden als Tabs sowohl ein Recorder als auch ein Emulator (Optional) Grafik dargestellt
 
 ## Konfiguration
 ![Xml Konfiguration](./xmlConfig.png)
