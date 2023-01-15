@@ -8,11 +8,11 @@ Program to to handle the Boardgame
 - **Messdate**: Daten mit physikalischen Einheiten (z.B. °C)
 
 ## Einleitung
-Das Ziel dieses Projekts ist es einen Datenlogger mit einer Stromessung im 4-20 **mA** Bereich zu entwickeln. Die Rohdatenerfassung  soll nach der Projektspezifikation über 24 **h** lang mit einem (konfigurierbarem) Erfassungsintervall von 1 **s** bis mehreren **min** erfolgen. Als Erfassungshardware wird der Yocto-0-10V-Rx [9] von der schweizer Firma Yoctopuc [8] verwendet. Die Messdaten werden über einer konfigurierbare lineare Konversationfunktion in physikalische Grössen umgerechnet und in einem graphischen User Interface (GUI) dargestellt. Die aufgezeichneten physischen Messwerte soll neben der Darstellung im GUI auch auf der Harddisk als CSV File abgespeichert werden. 
+Das Ziel dieses Projekts ist es einen Messdaten-Recorder mit einer Strommessung im 4-20 **mA** Bereich zu entwickeln. Die Rohdatenerfassung  soll nach der Projektspezifikation über 24 **h** lang mit einem (konfigurierbarem) Erfassungsintervall von 1 **s** bis mehreren **min** erfolgen. Als Erfassungshardware wird der Yocto-4-20mA-Rx [9] von der schweizer Firma Yoctopuc [8] verwendet. Die Rohdaten werden über eine konfigurierbare lineare Funktion in physikalische Messwerte umgerechnet. Die aufgezeichneten physischen Messwerte soll neben der Darstellung im (graphischen User Interface (GUI) auch auf der Harddisk als CSV File abgespeichert werden. Im GUI werden auch die aktuellen Min/Max/Mean Roh- und Messwerte nummerisch dargestellt.
 
 In zweiten Schritt soll das Projekt so erweitert werden, das aufgezeichneten Messwertdaten die als CSV Datei gelesen werden und über ein Yoctopuc[8] Emulator Modul [10] mit einem Strombereich von 4-20 **mA** ausgegeben werden. Der Verlauf der physikalischen Ausgabewerte soll im selben GUI, auf einem anderen Tab dargestellt werden.
 
-Das Programm soll konfiguierbar 1-12 Messsensoren sowohl als Empänger als auch als Sender unterstützen. Als Konfigurationsdatei wird ein XML Format verwendet in dem die zu verwendenden Senoren und Emulatoren persisdent abgespeichert werden.
+Das Programm soll konfiguierbar 1-12 Messsensoren sowohl als Empänger als auch als Sender unterstützen. Als Konfigurationsdatei wird ein XML Format verwendet in dem die zu verwendenden Senoren und Emulatoren persistent abgespeichert werden.
 
 ## Architektur
 Die persistente Konfiguration wird in das Programm geladen `configuration.py`. In einem nächsten Schritt wird das GUI gestartet. In der verwendeten Model-View-Contoller Architectur fungiert das GUI als View-Controller Komponente das in konfigurierten Erfassungsinterval die Messdaten vom `producer.py`Python modul abholt.
@@ -20,7 +20,9 @@ Die persistente Konfiguration wird in das Programm geladen `configuration.py`. I
 ![Model View Controller Aufbau](./mvc.png)
 
 ## Graphic User Interface (GUI)
-Das Graphic User Interface (GUI) ist in der Datei `gui.py` implementiert. Als Bibliotheke wird PyQt [11] verwendet. Diese Biblioteke stellt die funktionalität zur verfügung um ein Graphisches Fenster platformunabnängig zu implementieren. Das hat `DataRecorder` steh in der Titlebar. Es folgt eine eine Menubar mit den Eintr´
+Das Graphic User Interface (GUI) ist in der Datei `gui.py` implementiert. Als Bibliotheke wird PyQt [11] verwendet. Diese Biblioteke stellt die funktionalität zur verfügung um ein Graphisches Fenster platformunabnängig zu implementieren. Das hat `DataRecorder` steh in der Titlebar. Es folgt eine eine Menubar mit den Einträgen `File`und `About` .
+
+Im folgenden werden als Tabs  sowohl ein Recorder als auch ein Emulator Grafik dargestellt
 
 ## Konfiguration
 ![Xml Konfiguration](./xmlConfig.png)
