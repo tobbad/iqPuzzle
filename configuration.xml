@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<configuration > 
+<targetfolder >
+<capturetime  time="24" unit="h">
+<datarate time="1" unit="m">
+<yoctopuc host="tcpip" ip ="127.0.0.1" port="4444">
+<ymodule id="RX420MA1-123456" type="Yocto-4-20mA-Rx">
+<yfuncton id="genericSensor1" signalName="refTemperatur" type="input" rawMin="4.0" rawMax="20.0" min="0" max="100" unit="°C">
+<yfuncton id="genericSensor2" signalName="Temperatur" type="input" rawMin="4.0" rawMax="20.0" min="0" max="100" unit="°C">
+</ymodule >
+<ymodule id="TX420MA1-123456" type="Yocto-4-20mA-Tx">
+<yfuncton id="genericSensor2" signalName="Temperatur" type="output" rawMin="4.0" rawMax="20.0" min="0" max="100" unit="°C">
+</ymodule >
+<yoctopuc host="usb" >
+<ymodule id="RX420MA1-123456" type="Yocto-4-20mA-Rx">
+<yfuncton id="genericSensor1" signalName="refTemperatur" type="input" rawMin="4.0" rawMax="20.0" min="0" max="100" unit="°C">
+<yfuncton id="genericSensor2" signalName="Temperatur" type="input" rawMin="4.0" rawMax="20.0" min="0" max="100" unit="°C">
+</ymodule >
+<ymodule id="TX420MA1-123456" type="Yocto-4-20mA-Tx">
+<yfuncton id="genericSensor2" signalName="Temperatur" type="output" rawMin="4.0" rawMax="20.0" min="0" max="100" unit="°C">
+</ymodule >
+</yoctopuc>
+</configuration>
